@@ -3,13 +3,22 @@ const express = require("express");
 const app = express();
 
 
-app.use("/hello",(req,res) =>{
-    res.send("namaste from server");
-})
+app.use("/user",(req,res,next) =>{
+    console.log("this is 1st handler");
+    res.send("1st route");
+    // next();
+},
+(req,res,next) => {
+    console.log("this is 2nd handler...");
+    res.send("2nd route");
+    next();
+},
+(req,res,next) => {
+    console.log("this is 3rd handler...");
+    res.send("3rd route");
 
-app.use("/test",(req,res) =>{
-    res.send("testing....");
-})
+}
+)
 
 app.listen(3000, () => {
     console.log("server started successfully.....")
