@@ -8,8 +8,8 @@ app.post("/signup", async (req,res) => {
     const user = new User({
         firstname: "Raghvendra",
         lastName: "kumar",
-        password: "ragh0666@",
-        emailId: "techbite88@gmail.com"
+        password: "######",
+        emailId: "abc@gmail.com"
     })
     try {
         await user.save();
