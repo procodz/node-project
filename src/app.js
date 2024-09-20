@@ -11,8 +11,12 @@ app.post("/signup", async (req,res) => {
         password: "ragh0666@",
         emailId: "techbite88@gmail.com"
     })
-    user.save();
-    res.send("user added successfully....");
+    try {
+        await user.save();
+        res.send("user added successfully....");
+    } catch (err) {
+        res.status(400).send("Error saving data to Db" + err.message);
+    }
 })
 
 
