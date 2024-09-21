@@ -4,15 +4,13 @@ const User = require("./models/user");
 
 const app = express();
 
-
-app.use(express.json());//converting json data to JS object
-// posting data recieved from body
-app.post("/signup", async (req,res) => {   // always mnake it async function and use await for database also put your logic in try and catch
-    
-    
-    
-    // console.log(req.body);
-    const user = new User(req.body)
+app.post("/signup", async (req,res) => {
+    const user = new User({
+        firstname: "Raghvendra",
+        lastName: "kumar",
+        password: "ragh0666@",
+        emailId: "techbite88@gmail.com"
+    })
     try {
         await user.save();
         res.send("user added successfully....");
