@@ -6,6 +6,7 @@ const app = express();
 
 
 app.use(express.json());//converting json data to JS object
+// posting data recieved from body
 app.post("/signup", async (req,res) => {   // always mnake it async function and use await for database also put your logic in try and catch
     
     
@@ -20,7 +21,23 @@ app.post("/signup", async (req,res) => {   // always mnake it async function and
     }
 })
 
-
+//Feed API - get all the users from the DB
+app.get("/feed", async (req,res) =>{
+    const userEmail = req.body.emailId; //getting email from body
+    try{
+        const userDetail = await User.find({emailId: userEmail}); //giving userdetails matching useremail also there is findOne() ==> it only return only one user matching 
+        
+        if(userDetail.length === 0){ //bcs userDetails would be array object if arrays len is 0 means there is no such user matching this email..
+            res.status(404).send("user not found");
+        }
+        else{
+            res.send(userDetail);
+        }
+    }
+    catch (err){
+        res.status(404).send("something went wrong");
+    }
+});
 
 
 connectDB().then(() => {
