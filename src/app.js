@@ -38,6 +38,19 @@ app.get("/feed", async (req,res) =>{
         res.status(404).send("something went wrong");
     }
 });
+//delete a user from DB
+app.delete("/user", async (req,res) =>{
+    const userId = req.body.userId;
+    try{
+        const user = await User.findOneAndDelete(userId);
+        res.send("user deleted successfully");
+    }
+    catch (err){
+        res.status(404).send("something went wrong...");
+    }
+})
+
+//Update the data inDB
 
 
 connectDB().then(() => {
