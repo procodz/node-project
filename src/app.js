@@ -4,13 +4,14 @@ const User = require("./models/user");
 
 const app = express();
 
-app.post("/signup", async (req,res) => {
-    const user = new User({
-        firstname: "Raghvendra",
-        lastName: "kumar",
-        password: "ragh0666@",
-        emailId: "techbite88@gmail.com"
-    })
+
+app.use(express.json());//converting json data to JS object
+app.post("/signup", async (req,res) => {   // always mnake it async function and use await for database also put your logic in try and catch
+    
+    
+    
+    // console.log(req.body);
+    const user = new User(req.body)
     try {
         await user.save();
         res.send("user added successfully....");
@@ -22,21 +23,11 @@ app.post("/signup", async (req,res) => {
 
 
 
-
-
-
-
-
-connectDB()
-    .then(() => {
-        console.log("DB connceted....")
-        app.listen(3000, () => {
-            console.log("server started successfully.....")
-        })
-        
+connectDB().then(() => {
+    console.log("DB connected");
+    app.listen(3000,() => {
+        console.log("Listening server 3000.....");
     })
-    .catch((err) => {
-        console.error("DB did not connect!!");
-    });
-
-
+}).catch((err) =>{
+    console.error("DB could not connect...");
+});
