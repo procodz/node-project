@@ -3,6 +3,7 @@ const connectDB = require("./config/database")
 const User = require("./models/user");
 
 const app = express();
+app.use(express.json());
 
 app.post("/signup", async (req,res) => {
     
@@ -50,8 +51,11 @@ app.patch("/user", async (req,res) => {
   const userId = req.body.userId;
   const data = req.body;
   try{
-    const updatedUser = await User.findByIdAndUpdate({_id: userId}, data);
+    const updatedUser = await User.findByIdAndUpdate({_id: userId}, data, {
+        runValidators: true,
+    });
     res.send("user data updated successfully...");
+    
   }
   catch (err){
     res.status(404).send("Data could not be updated...");
