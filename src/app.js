@@ -10,6 +10,11 @@ app.post("/signup", async (req,res) => {
     const userDetails = req.body;
     const user = new User(userDetails);
     try {
+        // const postingNewData = ["firstName", "lastName", "emailId", "skills"];
+        // const postableData = Object.keys(userDetails).every((k) => postingNewData.includes(k));
+        // if(!postableData){
+        //     throw new Error("data could not be saved....");
+        // }
         await user.save();
         res.send("user added successfully....");
     } catch (err) {
@@ -47,10 +52,16 @@ app.delete("/user", async (req,res) =>{
 })
 
 //Update the data in DB
-app.patch("/user", async (req,res) => {
-  const userId = req.body.userId;
+app.patch("/user/:userId", async (req,res) => {
+  const userId = req.params?.userId;
   const data = req.body;
+  
   try{
+    const Allowed_Update = ["age", "gender", "skills"];
+    const isUpdateAllowed = Object.keys(data).every((k) => Allowed_Update.includes(k));
+    if(!isUpdateAllowed){
+        throw new Error("Invalid Update...");
+    }
     const updatedUser = await User.findByIdAndUpdate({_id: userId}, data, {
         runValidators: true,
     });

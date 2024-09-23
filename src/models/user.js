@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         //required: true,
         lowercase: true,
-        //trim: true,
+        trim: true,
         minLength: 4,
         maxLength: 50,
     },
@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         //required: true,
         lowercase: true,
-        //trim: true,
+        trim: true,
         minLength: 4,
         maxLength: 50,
     },
@@ -28,10 +28,10 @@ const userSchema = new mongoose.Schema({
     },
     emailId: {
         type: String,
-        require: true,
+        //require: true,
         unique: true,
         lowercase: true,
-        //trim: true,
+        trim: true,
     },
     password: {
         type: String,
@@ -47,6 +47,13 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
 
+    },
+    skills: {
+        type: [String],
+        //required: true,
+        unique: true,
+        minLength: 2,
+        maxLength: 8
     }
 }, {timestamps: true});
 
