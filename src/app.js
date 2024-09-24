@@ -1,20 +1,24 @@
 const express = require("express");
 const connectDB = require("./config/database")
 const User = require("./models/user");
+const bcrypt = require("bcrypt");
 
 const app = express();
 app.use(express.json());
 
 app.post("/signup", async (req,res) => {
     
-    const userDetails = req.body;
-    const user = new User(userDetails);
+    
     try {
-        // const postingNewData = ["firstName", "lastName", "emailId", "skills"];
-        // const postableData = Object.keys(userDetails).every((k) => postingNewData.includes(k));
-        // if(!postableData){
-        //     throw new Error("data could not be saved....");
-        // }
+        const {firstName, lastName, emailId, password} = req.body;
+        const passworHash = await bcrypt.hash(password,10);
+        const user = new User(
+            {firstName,
+            lastName,
+            emailId,
+            password: passworHash,
+        }
+        );
         await user.save();
         res.send("user added successfully....");
     } catch (err) {
