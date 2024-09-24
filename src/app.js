@@ -2,10 +2,11 @@ const express = require("express");
 const connectDB = require("./config/database")
 const User = require("./models/user");
 const bcrypt = require("bcrypt");
+const {validateEmailId} = require("./utils/validate");
 
 const app = express();
 app.use(express.json());
-
+//signup API
 app.post("/signup", async (req,res) => {
     
     
@@ -24,7 +25,28 @@ app.post("/signup", async (req,res) => {
     } catch (err) {
         res.status(400).send("Error saving data to Db" + err.message);
     }
-})
+});
+
+//Login API
+app.post("/login", async (req,res)=>{
+    try{
+        const {emailId, password} = req.body;
+        validateEmailId(emailId); //first validating email
+        const user = await User.findOne({emailId: emailId}); // cheching if this email is there in DB
+        if(!user){
+            throw new Error("invalid credentials")
+        }
+        const isPasswordValid = await bcrypt.compare(password, user.password);//comparing entered pass and user hashPass //this fn returns a boolean
+        if(isPasswordValid){
+            res.send("login successfull");//if true login 
+        }else{
+            throw new Error("ivalid credintials");
+        }
+    }
+    catch(err){
+        res.status(404).send("Something went wrong" + err.message);
+    }
+});
 
 //Feed API - get all the users from the DB
 app.get("/feed", async (req,res) =>{
