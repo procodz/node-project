@@ -3,9 +3,14 @@ const connectDB = require("./config/database")
 const User = require("./models/user");
 const bcrypt = require("bcrypt");
 const {validateEmailId} = require("./utils/validate");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 
 const app = express();
+
 app.use(express.json());
+app.use(cookieParser());
+
 //signup API
 app.post("/signup", async (req,res) => {
     
@@ -38,6 +43,9 @@ app.post("/login", async (req,res)=>{
         }
         const isPasswordValid = await bcrypt.compare(password, user.password);//comparing entered pass and user hashPass //this fn returns a boolean
         if(isPasswordValid){
+            //genrating jwt token
+            const token = await jwt.sign({_id: user._id}, "secret@key123&*");
+            res.cookie("token", token);
             res.send("login successfull");//if true login 
         }else{
             throw new Error("ivalid credintials");
@@ -45,6 +53,27 @@ app.post("/login", async (req,res)=>{
     }
     catch(err){
         res.status(404).send("Something went wrong" + err.message);
+    }
+});
+
+//Profile API
+app.post("/profile", async (req,res) => {
+    try{
+        const cookies = req.cookies;
+        const { token } = cookies;
+        const decodedMsg = await jwt.verify(token, "secret@key123&*")
+        const {_id} = decodedMsg;
+        const user = await User.findById(_id);
+        if(!user){
+            throw new Error("user does not found");
+        }
+        else{
+            res.send(user);
+        }
+
+    }
+    catch(err){
+        res.status(404).send("something went wrong" + err.message);
     }
 });
 
