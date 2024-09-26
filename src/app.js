@@ -17,13 +17,14 @@ app.post("/signup", async (req,res) => {
     
     
     try {
-        const {firstName, lastName, emailId, password} = req.body;
+        const {firstName, lastName, emailId, password, skills} = req.body;
         const passwordHash = await bcrypt.hash(password,10);
         const user = new User(
             {firstName,
             lastName,
             emailId,
             password: passwordHash,
+            skills
         }
         );
         await user.save();
