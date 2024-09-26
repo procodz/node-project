@@ -57,14 +57,14 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
 
-    },
-    skills: {
-        type: [String],
-        //required: true,
-        minLength: 2,
-        maxLength: 8,
-        default: []
     }
+    // skills: {
+    //     type: [String],
+    //     required: true,
+    //     minLength: 2,
+    //     maxLength: 8,
+    //     default: []
+    // }
 }, {timestamps: true});
 
 module.exports = mongoose.model("User", userSchema);

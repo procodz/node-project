@@ -17,12 +17,12 @@ app.post("/signup", async (req,res) => {
     
     try {
         const {firstName, lastName, emailId, password} = req.body;
-        const passworHash = await bcrypt.hash(password,10);
+        const passwordHash = await bcrypt.hash(password,10);
         const user = new User(
             {firstName,
             lastName,
             emailId,
-            password: passworHash,
+            password: passwordHash,
         }
         );
         await user.save();
@@ -45,7 +45,7 @@ app.post("/login", async (req,res)=>{
         if(isPasswordValid){
             //genrating jwt token
             const token = await jwt.sign({_id: user._id}, "secret@key123&*");
-            res.cookie("token", token);
+            res.cookie("token", token);//it will send the cookie to user with name token
             res.send("login successfull");//if true login 
         }else{
             throw new Error("ivalid credintials");
@@ -59,11 +59,11 @@ app.post("/login", async (req,res)=>{
 //Profile API
 app.post("/profile", async (req,res) => {
     try{
-        const cookies = req.cookies;
-        const { token } = cookies;
-        const decodedMsg = await jwt.verify(token, "secret@key123&*")
-        const {_id} = decodedMsg;
-        const user = await User.findById(_id);
+        const cookies = req.cookies; //extracting cookie from user browser
+        const { token } = cookies; // taking token from cookie
+        const decodedMsg = await jwt.verify(token, "secret@key123&*") // it will verify the token with our secret id which was provided when creating jwt token in login api
+        const {_id} = decodedMsg; // taking out _id of decoded msg
+        const user = await User.findById(_id); //that id is getting user detail
         if(!user){
             throw new Error("user does not found");
         }
