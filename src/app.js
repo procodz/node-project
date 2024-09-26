@@ -42,11 +42,14 @@ app.post("/login", async (req,res)=>{
         if(!user){
             throw new Error("invalid credentials")
         }
-        const isPasswordValid = await bcrypt.compare(password, user.password);//comparing entered pass and user hashPass //this fn returns a boolean
+        // const isPasswordValid = await bcrypt.compare(password, user.password);//comparing entered pass and user hashPass //this fn returns a boolean
+        const isPasswordValid = await user.validatePassword(password);
         if(isPasswordValid){
             //genrating jwt token
-            const token = await jwt.sign({_id: user._id}, "secret@key123&*", { expiresIn: "7d" });
-            res.cookie("token", token);//it will send the cookie to user with name token
+            // const token = await jwt.sign({_id: user._id}, "secret@key123&*", { expiresIn: "7d" });
+            // res.cookie("token", token);//it will send the cookie to user with name token
+            const token = await user.getJWT();
+            res.cookie("token", token);
             res.send("login successfull");//if true login 
         }else{
             throw new Error("ivalid credintials");
