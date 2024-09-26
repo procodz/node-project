@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const {validateEmailId} = require("./utils/validate");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
+const { userAuth } = require("./middleweres/auth");
 
 const app = express();
 
@@ -28,7 +29,7 @@ app.post("/signup", async (req,res) => {
         await user.save();
         res.send("user added successfully....");
     } catch (err) {
-        res.status(400).send("Error saving data to Db" + err.message);
+        res.status(400).send("Error : " + err.message);
     }
 });
 
@@ -52,30 +53,31 @@ app.post("/login", async (req,res)=>{
         }
     }
     catch(err){
-        res.status(404).send("Something went wrong" + err.message);
+        res.status(404).send("ERROR" + err.message);
     }
 });
 
 //Profile API
-app.post("/profile", async (req,res) => {
+app.post("/profile", userAuth, async (req,res) => {
     try{
-        const cookies = req.cookies; //extracting cookie from user browser
-        const { token } = cookies; // taking token from cookie
-        const decodedMsg = await jwt.verify(token, "secret@key123&*") // it will verify the token with our secret id which was provided when creating jwt token in login api
-        const {_id} = decodedMsg; // taking out _id of decoded msg
-        const user = await User.findById(_id); //that id is getting user detail
-        if(!user){
-            throw new Error("user does not found");
-        }
-        else{
-            res.send(user);
-        }
+        const user = req.user;
+        res.send(user);
 
     }
     catch(err){
-        res.status(404).send("something went wrong" + err.message);
+        res.status(404).send("ERROR" + err.message);
     }
 });
+
+//sendConnectionReq
+app.post("/sendConnectionReq", userAuth, async (req,res) => {
+    try {
+        const user = req.user; // we are getting the user details from the request which is describe in auth middlawere 
+        res.send(user.firstName + " " + "has sent the request");
+    } catch (err) {
+        res.status(400).send("ERROR" + err.message);
+    }
+})
 
 //Feed API - get all the users from the DB
 app.get("/feed", async (req,res) =>{
@@ -91,7 +93,7 @@ app.get("/feed", async (req,res) =>{
         }
     }
     catch (err){
-        res.status(404).send("something went wrong");
+        res.status(404).send("ERROR" + err.message) ;
     }
 });
 //delete a user from DB
@@ -102,7 +104,7 @@ app.delete("/user", async (req,res) =>{
         res.send("user deleted successfully");
     }
     catch (err){
-        res.status(404).send("something went wrong...");
+        res.status(404).send("ERROR " + err.message);
     }
 })
 
@@ -127,7 +129,7 @@ app.patch("/user/:userId", async (req,res) => {
     
   }
   catch (err){
-    res.status(404).send("Data could not be updated...");
+    res.status(404).send("ERROR " + err.message);
   }
 });
 
