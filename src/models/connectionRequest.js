@@ -4,6 +4,7 @@ const connectionRequestModel = new mongoose.Schema({
     fromUserId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
+        // index: true, this single index
     },
     toUserId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -15,6 +16,8 @@ const connectionRequestModel = new mongoose.Schema({
         enum: ["accepted", "rejected", "interested", "ignored"],
     }
 });
+
+connectionRequestModel.index({fromUserId: 1, toUserId: 1}) // it is compound indexing it is to optimize the search query in DB
 
 const ConnectionRequest = new mongoose.model("ConnectionRequest", connectionRequestModel);
 
