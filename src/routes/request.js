@@ -5,15 +5,6 @@ const ConnectionRequest = require("../models/connectionRequest")
 const User = require("../models/user")
 
 //sendConnectionReq
-requestRouter.post("/sendConnectionReq", userAuth, async (req,res) => {
-    try {
-        const user = req.user; // we are getting the user details from the request which is describe in auth middlawere 
-        res.send(user.firstName + " " + "has sent the request");
-    } catch (err) {
-        res.status(400).send("ERROR" + err.message);
-    }
-});
-
 requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req,res) =>{
     try {const userId = req.user._id;
     const fromUserId = userId;
@@ -65,5 +56,33 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req,res) 
 }
 });
 
+//accepting or rejecting the request API
+
+requestRouter.post("/request/review/:status/:requestId", userAuth, async(req,res) => {
+    try {
+    const loggedInUser = req.user;
+    const {status, requestId} = req.params;
+    const allowedStatus = ["accepted", "rejected"];
+
+    if(!allowedStatus.includes(status)){
+        return res.status(404).json({message: "Invalid review status"});
+    };
+    const connectionRequest = await ConnectionRequest.findOne({  //finding document in DB where id is RequestId and status is ineterested and toUserId is loggedInUser bcs only user who have received the req can accept or reject it
+        _id: requestId, 
+        status: "interested",
+        toUserId: loggedInUser._id,
+    });
+    if(!connectionRequest){
+        return res.status(404).json({message: "Bad request.."});
+    };
+
+    const data = await connectionRequest.save();
+    res.json({
+        message: "request is"+ " " + status,
+        data,
+    })}catch(err){
+        res.status(404).send("ERROR: " + err.message);
+    };
+});
 
 module.exports = requestRouter;
