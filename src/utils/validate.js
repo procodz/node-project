@@ -6,6 +6,13 @@ const validateEmailId = (req) =>{
     }
 }
 
+const validatePassword = (req) =>{
+    if(!validator.isStrongPassword(req)){
+        throw new Error("pls enter strong password");
+    }
+};
+
 module.exports = {
-    validateEmailId
+    validateEmailId,
+    validatePassword,
 }
