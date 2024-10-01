@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
+const User = require("../models/user")
 
 const connectionRequestModel = new mongoose.Schema({
     fromUserId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         // index: true, this single index
+        ref: "User", // linking User DB to this DB // this line is giving reference to User schema from where we can populate the query
     },
     toUserId: {
         type: mongoose.Schema.Types.ObjectId,
