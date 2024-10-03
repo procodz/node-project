@@ -68,6 +68,11 @@ requestRouter.get("/feed", userAuth, async (req,res) => {
     try {
         
         const loggedInUser = req.user;
+        const page = req.query.page || 1; //take out page no from req
+        let limit = req.query.limit || 3; // take out limit from req
+        limit = limit > 50 ? 50: limit; // checks that user does not rquest more than 50 user feed
+        const skip = (page-1)*limit;
+
         const connectionRequest = await ConnectionRequest.find({
             $or: [{fromUserId: loggedInUser._id},
                 {toUserId: loggedInUser._id}
@@ -85,8 +90,8 @@ requestRouter.get("/feed", userAuth, async (req,res) => {
                 {_id: {$ne: loggedInUser._id}}
 
             ],
-        }).select(USER_SAFE_DATA);
-        res.send(user);
+        }).select(USER_SAFE_DATA).skip(skip).limit(limit); //skip() & limit() for pagination
+        res.json({dat: user});
 
 
     } catch (error) {
