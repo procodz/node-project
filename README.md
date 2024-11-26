@@ -176,11 +176,6 @@ project-root/
 
 This project is licensed under the MIT License.
 
-## 👥 Contact
-
-Your Name - [Your Email]
-Project Link: [Your GitHub Repository]
-```
 
 ## 🐛 Reporting Issues
 
