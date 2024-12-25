@@ -1,4 +1,4 @@
-# DevTinder: Professional Networking Platform
+# DevConnect: Professional Networking Platform
 
 ## Project Overview
 
